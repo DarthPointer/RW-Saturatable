@@ -172,6 +172,11 @@ namespace SaturatableRW
 
             wheelRef = part.Modules.GetModule<ModuleReactionWheel>();
 
+            if (wheelRef == null)
+            {
+                return;
+            }
+
             // Float curve initialisation
 
             maxRollTorque = wheelRef.RollTorque;
@@ -191,6 +196,11 @@ namespace SaturatableRW
 
         private IEnumerator registerWheel()
         {
+            if (wheelRef == null)
+            {
+                yield break;
+            }
+
             yield return null;
 
             dischargeResources = new List<ResourceConsumer>();
@@ -222,6 +232,11 @@ namespace SaturatableRW
 
         public void LoadConfig()
         {
+            if (wheelRef == null)
+            {
+                return;
+            }
+
             if (config == null)
                 config = KSP.IO.PluginConfiguration.CreateForType<RWSaturatable>();
             config.load();
@@ -247,6 +262,11 @@ namespace SaturatableRW
         private string info = string.Empty;
         public override string GetInfo()
         {
+            if (wheelRef == null)
+            {
+                return "";
+            }
+
             if (HighLogic.LoadedSceneIsEditor && string.IsNullOrEmpty(info))
             {
                 saturationLimit = (wheelRef.PitchTorque + wheelRef.YawTorque + wheelRef.RollTorque) * saturationScale / 3;
@@ -278,6 +298,11 @@ namespace SaturatableRW
 
         public void FixedUpdate()
         {
+            if (wheelRef == null)
+            {
+                return;
+            }
+
             if (!(HighLogic.LoadedSceneIsFlight && FlightGlobals.ready))
                 return;
             useResourcesToRecover();
