@@ -57,7 +57,7 @@ namespace SaturatableRW
 
         void drawWindow(int id)
         {
-            if (GUI.Button(new Rect(windowRect.width - 25, 5, 20, 20), "x"))
+            if (GUI.Button(new Rect(windowRect.width - 20, 5, 15, 15), "x"))
                 showWindow = false;
 
             foreach (KeyValuePair<string, VesselInfo> ves in Vessels)
