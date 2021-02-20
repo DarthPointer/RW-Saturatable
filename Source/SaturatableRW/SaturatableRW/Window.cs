@@ -21,6 +21,8 @@ namespace SaturatableRW
         Rect windowRect = new Rect();
         public bool showWindow = false;
 
+        public readonly Texture2D dischargeLabelIcon = GameDatabase.Instance.GetTexture("Squad/PartList/SimpleIcons/fuels_monopropellant", false);
+
         void Start()
         {
             InitWindow();
@@ -87,8 +89,11 @@ namespace SaturatableRW
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 GUILayout.BeginVertical();
+                GUILayout.Space(15);
+
                 foreach (RWSaturatable rw in ves.wheels)
                     drawWheel(rw);
+
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
             }
@@ -111,7 +116,7 @@ namespace SaturatableRW
             }
             if (rw.canForceDischarge)
             {
-                rw.bConsumeResource = GUILayout.Toggle(rw.bConsumeResource, "", GUI.skin.button, GUILayout.Width(40));
+                rw.bConsumeResource = GUILayout.Toggle(rw.bConsumeResource, dischargeLabelIcon, GUI.skin.button, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
 
@@ -121,6 +126,8 @@ namespace SaturatableRW
             GUILayout.Label(string.Format("{0}\t{1:0.0}kN\t{2:0.0}kN", "Pitch", rw.availablePitchTorque, rw.maxPitchTorque));
             GUILayout.Label(string.Format("{0}\t{1:0.0}kN\t{2:0.0}kN", "Yaw", rw.availableYawTorque, rw.maxYawTorque));
             GUILayout.Label(string.Format("{0}\t{1:0.0}kN\t{2:0.0}kN", "Roll", rw.availableRollTorque, rw.maxRollTorque));
+
+            GUILayout.Space(15);
         }
     }
 }
