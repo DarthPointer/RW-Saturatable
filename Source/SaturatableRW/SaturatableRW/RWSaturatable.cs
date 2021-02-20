@@ -149,8 +149,9 @@ namespace SaturatableRW
                 return;
             try
             {
-                if (Window.Instance.Vessels.ContainsKey(vessel.vesselName))
-                    Window.Instance.Vessels.Remove(vessel.vesselName);
+                Window.Instance.Vessels.RemoveAll(x => x.vessel == vessel);
+                //if (Window.Instance.Vessels.ContainsKey(vessel.vesselName))
+                //    Window.Instance.Vessels.Remove(vessel.vesselName);
             }
             catch //(Exception ex)
             {
@@ -224,10 +225,15 @@ namespace SaturatableRW
             for (int i = 0; i < 10; i++)
                 yield return null;
 
-            if (!Window.Instance.Vessels.ContainsKey(vessel.vesselName))
-                Window.Instance.Vessels.Add(vessel.vesselName, new VesselInfo(vessel, wheelRef.State == ModuleReactionWheel.WheelState.Active));
+            VesselInfo partVesselInfo = Window.Instance.Vessels.Find(x => x.vessel == vessel);
 
-            Window.Instance.Vessels[vessel.vesselName].wheels.Add(this);
+            if (partVesselInfo == null)
+            {
+                partVesselInfo = new VesselInfo(vessel, wheelRef.State == ModuleReactionWheel.WheelState.Active);
+                Window.Instance.Vessels.Add(partVesselInfo);
+            }
+
+            partVesselInfo.wheels.Add(this);
         }
 
         public void LoadConfig()
@@ -317,6 +323,11 @@ namespace SaturatableRW
         private Vector3 lastRemovedMoment;
         private void useResourcesToRecover()
         {
+            if (bConsumeResource && !SaturatableRWSettings.EnableDischargeForPropellant)
+            {
+                bConsumeResource = false;
+            }
+
             if (!bConsumeResource || !canForceDischarge)
                 return;
 
@@ -384,9 +395,12 @@ namespace SaturatableRW
             }
 
             // reduce momentum stored by decay factor
-            x_Moment = decayMoment(x_Moment, Planetarium.forward);
-            y_Moment = decayMoment(y_Moment, Planetarium.up);
-            z_Moment = decayMoment(z_Moment, Planetarium.right);
+            if (SaturatableRWSettings.EnableReasonlessRecovery)
+            {
+                x_Moment = decayMoment(x_Moment, Planetarium.forward);
+                y_Moment = decayMoment(y_Moment, Planetarium.up);
+                z_Moment = decayMoment(z_Moment, Planetarium.right);
+            }
         }
 
         private void updateTorque()
@@ -428,7 +442,8 @@ namespace SaturatableRW
                                         , Vector3.Dot(this.vessel.transform.forward, refAxis) * maxYawTorque
                                         , Vector3.Dot(this.vessel.transform.up, refAxis) * maxRollTorque).magnitude;
 
-            float decay = torqueMag * (bleedRate.Evaluate(pctSaturation(moment, saturationLimit))) * TimeWarp.fixedDeltaTime;
+            float decay = torqueMag * (bleedRate.Evaluate(pctSaturation(moment, saturationLimit))) * TimeWarp.fixedDeltaTime * 
+                SaturatableRWSettings.ReasonlessRecoveryScale;
             if (moment > decay)
                 return moment - decay;
             else if (moment < -decay)

@@ -17,7 +17,7 @@ namespace SaturatableRW
             }
         }
 
-        public Dictionary<string, VesselInfo> Vessels = new Dictionary<string, VesselInfo>();
+        public List<VesselInfo> Vessels = new List<VesselInfo>();
         Rect windowRect = new Rect();
         public bool showWindow = false;
 
@@ -64,8 +64,8 @@ namespace SaturatableRW
 
             GUILayout.Space(10);
 
-            foreach (KeyValuePair<string, VesselInfo> ves in Vessels)
-                drawVessel(ves.Value);
+            foreach (VesselInfo ves in Vessels)
+                drawVessel(ves);
 
             GUI.DragWindow();
         }
@@ -115,7 +115,7 @@ namespace SaturatableRW
                 else if (Event.current.button == 1)
                     rw.wheelRef.State = rw.wheelRef.State == ModuleReactionWheel.WheelState.Disabled ? ModuleReactionWheel.WheelState.Active : ModuleReactionWheel.WheelState.Disabled;
             }
-            if (rw.canForceDischarge)
+            if (rw.canForceDischarge && SaturatableRWSettings.EnableDischargeForPropellant)
             {
                 var savedColor = GUI.backgroundColor;
                 if (rw.bConsumeResource)
