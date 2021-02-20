@@ -59,8 +59,10 @@ namespace SaturatableRW
 
         void drawWindow(int id)
         {
-            if (GUI.Button(new Rect(windowRect.width - 20, 5, 15, 15), "x"))
+            if (GUI.Button(new Rect(windowRect.width - 20, 5, 20, 20), "x"))
                 showWindow = false;
+
+            GUILayout.Space(10);
 
             foreach (KeyValuePair<string, VesselInfo> ves in Vessels)
                 drawVessel(ves.Value);
@@ -89,7 +91,6 @@ namespace SaturatableRW
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(20);
                 GUILayout.BeginVertical();
-                GUILayout.Space(15);
 
                 foreach (RWSaturatable rw in ves.wheels)
                     drawWheel(rw);
@@ -116,7 +117,14 @@ namespace SaturatableRW
             }
             if (rw.canForceDischarge)
             {
+                var savedColor = GUI.backgroundColor;
+                if (rw.bConsumeResource)
+                {
+                    GUI.backgroundColor = XKCDColors.Red;
+                }
                 rw.bConsumeResource = GUILayout.Toggle(rw.bConsumeResource, dischargeLabelIcon, GUI.skin.button, GUILayout.Width(40));
+
+                GUI.backgroundColor = savedColor;
             }
             GUILayout.EndHorizontal();
 
