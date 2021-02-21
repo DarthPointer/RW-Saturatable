@@ -195,5 +195,8 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
+# Release downloadables that DarthPointer tends to generate in the local repo folder
+*.zip
+
 PartDatabase.cfg
 Physics.cfg
