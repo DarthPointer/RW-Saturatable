@@ -19,9 +19,9 @@ namespace SaturatableRW
             toggleRWButton.onLeftClick = () => Window.Instance.showWindow = !Window.Instance.showWindow;
         }
 
-        public override void OnSave(ConfigNode node)
+        private void OnDestroy()
         {
-            ApplicationLauncher.Instance.RemoveApplication(toggleRWButton);
+            ApplicationLauncher.Instance.RemoveModApplication(toggleRWButton);
         }
     }
 }
