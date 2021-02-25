@@ -10,7 +10,7 @@ namespace SaturatableRW
         public override string GetInfo()
         {
             string baseInfo = base.GetInfo();
-            int index = baseInfo.IndexOf("<color=#99ff00ff><b>Requires:</b></color>");
+            int index = baseInfo.IndexOf("<color=#99ff00ff><b>");       // Left only loc-independent reference for copied info "entry point"
             string resourceRates = baseInfo.Substring(index);
             return string.Format("Thruster used to remove accumulated momentum from a RW\r\n<b>Discharge Rate:</b> {0}% / s\r\n\r\n{1}", (thrusterPower * 100).ToString("0.0"), resourceRates);
         }
